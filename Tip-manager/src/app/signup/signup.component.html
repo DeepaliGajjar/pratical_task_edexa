@@ -1,0 +1,67 @@
+<div class="d-flex justify-content-center mt-5" *ngIf="login">
+  <form [formGroup]="loginuser" (ngSubmit)="onSubmitlogin()">
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" formControlName="email" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="text-danger" *ngIf="loginuser.controls.email.errors">
+      <p *ngIf="loginuser.controls.email.errors?.required" class="lbl-err">Email is required field.</p>
+      <p *ngIf="loginuser.controls.email.errors?.email" class="lbl-err">Email is not valid.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" formControlName="password" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="text-danger" *ngIf="loginuser.controls.password.errors">
+      <p *ngIf="loginuser.controls.password.errors?.required" class="lbl-err">Password is required field.</p>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+      <button class="btn btn-success mr-5">Login</button>
+      <button class="btn btn-info" (click)="buildregisterForm()">Sign up</button>
+    </div>
+  </form>
+</div>
+
+<div class="d-flex justify-content-center mt-5" *ngIf="!login">
+  <form [formGroup]="registeruser" (ngSubmit)="onSubmitregister()" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="exampleInput">Name</label>
+      <input type="text" class="form-control" formControlName="name" id="exampleInput" placeholder="Name">
+    </div>
+    <div class="text-danger" *ngIf="registeruser.controls.name.errors">
+      <p *ngIf="registeruser.controls.name.errors?.required" class="lbl-err">Name is required field.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputimage">Profile Image</label>
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile" (change)="imageChange($event)">
+        <input type="hidden" name="fileHidden" formControlName="profilePicture" />
+        <label class="custom-file-label" for="customFile">Choose file</label>
+      </div>
+    </div>
+
+    {{filename}}
+    <div class="text-danger" *ngIf="registeruser.controls.profilePicture.errors">
+      <p *ngIf="registeruser.controls.profilePicture.errors?.required" class="lbl-err">Profile Picture is required field.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" formControlName="email" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="text-danger" *ngIf="registeruser.controls.email.errors">
+      <p *ngIf="registeruser.controls.email.errors?.required" class="lbl-err">Email is required field.</p>
+      <p *ngIf="registeruser.controls.email.errors?.email" class="lbl-err">Email is not valid.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputPassword1">Password</label>
+      <input type="password" class="form-control" formControlName="password" id="exampleInputPassword1" placeholder="Password">
+    </div>
+    <div class="text-danger" *ngIf="registeruser.controls.password.errors">
+      <p *ngIf="registeruser.controls.password.errors?.required" class="lbl-err">Password is required field.</p>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+      <button class="btn btn-success mr-5" (click)="buildloginForm()">Login</button>
+      <button class="btn btn-info" >Sign up</button>
+    </div>
+  </form>
+</div>
