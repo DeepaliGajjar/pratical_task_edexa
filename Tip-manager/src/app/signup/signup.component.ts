@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-signup',
@@ -11,6 +14,8 @@ export class SignupComponent implements OnInit {
   registeruser: FormGroup;
   loginuser: FormGroup;
   login = true;
+  submitted = false;
+
   headers = {
     'Content-Type': 'application/json',
     'token' : localStorage.getItem('user_token')
@@ -19,7 +24,9 @@ export class SignupComponent implements OnInit {
   filename: string;
   constructor(
     private _formBuilder: FormBuilder,
-    private http : HttpClient
+    private _router:Router,
+    private http : HttpClient,
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -37,27 +44,49 @@ export class SignupComponent implements OnInit {
   }
 
   buildloginForm(){
-    this.login = true
-    this.loginuser = this._formBuilder.group({
-      email: ['',[Validators.required,Validators.email]],
-      password: ['',Validators.required],
-    });
+      this.loginuser = this._formBuilder.group({
+        email: ['',[Validators.required,Validators.email]],
+        password: ['',Validators.required],
+      });
   }
 
   onSubmitlogin(){
-    console.log(this.loginuser.value);
-    let data = this.loginuser.value
-    this.http.post('http://localhost:30005/api/user/login',data,{headers:this.headers}).subscribe(data => {
-      console.log(data);
-
-    })
+    this.login = true
+    this.submitted= true
+    if(this.loginuser.invalid){
+      return false
+    }
+    else{
+      let data = this.loginuser.value
+      this.http.post('http://localhost:30007/api/user/login',data).subscribe(data => {
+        if(data['code'] === 200){
+          this.toastr.success(data['message'])
+          localStorage.setItem('user_token',data['data'].token)
+          this._router.navigate(["/tips"])
+        }
+        else{
+          this.toastr.error(data['message'])
+          this._router.navigate(["/"])
+        }
+      })
+    }
   }
 
   onSubmitregister(){
-    console.log(this.registeruser.value);
-    this.http.post('http://localhost:30005/api/user/signup',this.registeruser.value).subscribe(data => {
-      console.log(data);
-
+    this.registeruser.value['filename'] = this.selected_image
+    let fd = new FormData()
+    fd.append('filename',this.selected_image)
+    fd.append('name',this.registeruser.value.name)
+    fd.append('email',this.registeruser.value.email)
+    fd.append('password',this.registeruser.value.password)
+    fd.append('profilePicture',this.registeruser.value.profilePicture)
+    this.http.post('http://localhost:30007/api/user/signup',fd).subscribe(data => {
+      if(data['code'] === 200){
+        this.toastr.success(data['message'])
+      }
+      else{
+        this.toastr.error(data['message'])
+      }
     })
   }
 
@@ -65,7 +94,6 @@ export class SignupComponent implements OnInit {
     this.selected_image = <File>event.target.files[0]
     this.registeruser.controls['profilePicture'].setValue(this.selected_image ? this.selected_image.name : '')
     this.filename = this.selected_image ? this.selected_image.name : ''
-    console.log(this.selected_image);
-
+    this.registeruser.value['filename'] = this.selected_image
   }
 }

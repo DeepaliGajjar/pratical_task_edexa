@@ -1,0 +1,87 @@
+<div class="m-5">
+<button class="btn btn-info" (click)="Add()">
+  Add Percent
+</button>
+</div>
+<div class="d-flex justify-content-center mt-5">
+  <form [formGroup]="addtipsForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="exampleInput">Place</label>
+      <input type="text" class="form-control" formControlName="place"  placeholder="place">
+    </div>
+    <div class="text-danger" *ngIf="submitted && addtipsForm.controls.place.errors">
+      <p *ngIf="addtipsForm.controls.place.errors?.required" class="lbl-err">Place is required field.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInput">Total Amount</label>
+      <input type="text" class="form-control" formControlName="amount"  placeholder="Total Amount">
+    </div>
+    <div class="text-danger" *ngIf="submitted && addtipsForm.controls.amount.errors">
+      <p *ngIf="addtipsForm.controls.amount.errors?.required" class="lbl-err">Total Amount is required field.</p>
+    </div>
+    <div class="form-group">
+      <label for="exampleInput">Percentage</label>
+      <select class="form-select" formControlName="percentage" id="percentage">
+        <option value="">Select</option>
+        <option *ngFor="let item of percentlist" [value]="item.percentage">{{item.percentage}}</option>
+      </select>
+    </div>
+    <div class="text-danger" *ngIf="submitted && addtipsForm.controls.percentage.errors">
+      <p *ngIf="addtipsForm.controls.percentage.errors?.required" class="lbl-err">Percentage is required field.</p>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+      <button type = "submit" class="btn btn-info">Add Tip</button>
+    </div>
+  </form>
+</div>
+
+<div class="m-5">
+  <form [formGroup]="FilterForm" (ngSubmit)="FilterTips()">
+    <label for="start">Start Date:</label>
+    <input type="date" id="start" formControlName="startDate">
+    <div class="text-danger" *ngIf="filtersubmit && FilterForm.controls.startDate.errors">
+      <p *ngIf="FilterForm.controls.startDate.errors?.required" class="lbl-err">Start Date is required field.</p>
+    </div>
+    <br>
+    <label for="end">End Date:</label>
+    <input type="date" id="end" formControlName="endDate">
+    <div class="text-danger" *ngIf="filtersubmit && FilterForm.controls.endDate.errors">
+      <p *ngIf="FilterForm.controls.endDate.errors?.required" class="lbl-err">End Date is required field.</p>
+    </div>
+    <br>
+    <label for="analyticstype">Filter By:</label>
+    <select formControlName="analyticstype" id="analyticstype">
+      <option value="">Select</option>
+      <option value="tipPercentage">Tip Percentage</option>
+      <option value="mostvisited">Most Visited</option>
+    </select>
+    <br>
+    <input type="submit">
+  </form>
+</div>
+
+<div class="d-flex justify-content-center m-5">
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">On</th>
+      <th scope="col">Place</th>
+      <th scope="col">Total Amount</th>
+      <th scope="col">Percentage</th>
+      <th scope="col">Tip</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of tiplist; let i = index;">
+      <th scope="row">{{i+1}}</th>
+      <td>{{item.created_At | date:'dd,MMMM yyyy'}}</td>
+      <td>{{item.place}}</td>
+      <td>{{item.amount}}</td>
+      <td>{{item.percentage}}</td>
+      <td>{{item.tip}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
